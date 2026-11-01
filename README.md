@@ -1,4 +1,4 @@
-# Project Name
+# Memorize 'Em All
 
 Chrome extension which helps you memorize image-term pairs!
 
