@@ -1,6 +1,8 @@
-async function getData(url) {
+import { CONFIG } from './config.js';
+
+async function getData(url, options={}) {
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, options);
     if (!response.ok) {
       throw new Error(`Response Status: ${response.status}`);
     }
@@ -48,4 +50,34 @@ async function getPokemonImage(name, type="official-artwork") {
   }
 
   return imageUrl;
+}
+
+// Returns the ISO alpha-3 code of a random country
+async function getRandomCountry() {
+  // Having a limit is required by the API
+  let allCountries = await getData(
+    'https://api.restcountries.com/countries/v5?limit=1',
+    { headers: { 'Authorization': `Bearer ${CONFIG.REST_COUNTRIES_API_KEY}` } }
+  );
+
+  let count = allCountries.data.meta.total;
+  let randomId = Math.floor(Math.random() * count);
+
+  // Sort of hacky workaround for getting the country
+  // at an index; Couldn't find a better endpoint
+  let randomCountry = await getData(
+    `https://api.restcountries.com/countries/v5?limit=1&offset=${randomId}`,
+    { headers: { 'Authorization': `Bearer ${CONFIG.REST_COUNTRIES_API_KEY}` } }
+  );
+
+  return randomCountry.data.objects[0].codes.alpha_3;
+}
+
+// Returns the url corresponding to the country's flag
+async function getCountryFlag(iso) {
+  let country = await getData(
+    `https://api.restcountries.com/countries/v5/codes.alpha_3/${iso}`,
+    { headers: { 'Authorization': `Bearer ${CONFIG.REST_COUNTRIES_API_KEY}` } }
+  );
+  return country.data.objects[0].flag.url_png;
 }
