@@ -15,7 +15,7 @@ async function getData(url, options={}) {
 }
 
 // Returns the name of a random pokemon
-async function getRandomPokemon() {
+export async function getRandomPokemon() {
   let allPokemmon = await getData("https://pokeapi.co/api/v2/pokemon/");
   let count = allPokemmon.count;
 
@@ -36,7 +36,7 @@ async function getRandomPokemon() {
  * (intended for displaying on the user's screen) while sprite is smaller and
  * pixelated (intended for displaying on the collection screen).
  */
-async function getPokemonImage(name, type="official-artwork") {
+export async function getPokemonImage(name, type="official-artwork") {
   let pokemon = await getData(`https://pokeapi.co/api/v2/pokemon/${name}/`);
 
   let imageUrl;
@@ -53,7 +53,7 @@ async function getPokemonImage(name, type="official-artwork") {
 }
 
 // Returns the ISO alpha-3 code of a random country
-async function getRandomCountry() {
+export async function getRandomCountry() {
   // Having a limit is required by the API
   let allCountries = await getData(
     'https://api.restcountries.com/countries/v5?limit=1',
@@ -74,7 +74,7 @@ async function getRandomCountry() {
 }
 
 // Returns the url corresponding to the country's flag
-async function getCountryFlag(iso) {
+export async function getCountryFlag(iso) {
   let country = await getData(
     `https://api.restcountries.com/countries/v5/codes.alpha_3/${iso}`,
     { headers: { 'Authorization': `Bearer ${CONFIG.REST_COUNTRIES_API_KEY}` } }

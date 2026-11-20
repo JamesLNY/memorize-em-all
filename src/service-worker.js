@@ -1,3 +1,7 @@
+import * as api from './api.js'
+
+const MODE = "pokemon";
+
 /**
  * Fires when the extension is first installed, the extension is
  * updated to a new verison, or when Chrome is updated to a new
@@ -27,9 +31,19 @@ async function spawnImage() {
   let tab = await getCurrentTab();
 
   if (tab !== undefined) {
+    let term, imageSrc;
+    if (MODE === "pokemon") {
+      term = await api.getRandomPokemon();
+      imageSrc = await api.getPokemonImage(term);
+    }
+
     // tabs.sendMessage is used to send messages to content scripts
     // browser.sendMessage is used to send messages to scripts in the
     // background context
-    await browser.tabs.sendMessage(tab.id, 'spawn-image');
+    await browser.tabs.sendMessage(tab.id, {
+      type: "spawn-image",
+      term: term,
+      imageSrc: imageSrc
+    });
   }
 }

@@ -1,6 +1,18 @@
-function handleMessages(message, sender, sendResponse) {
-  if (message === 'spawn-image') {
-    console.log("Temporary testing message.");
+function spawnImage(src, term) {
+  const image = new Image();
+  image.src = src;
+
+  // Overlays the image on top of existing content
+  image.style.position = "fixed";
+  image.style.top = "50px";
+  image.style.left = "50px";
+
+  document.body.appendChild(image);
+}
+
+function handleMessages(message) {
+  if (message.type === 'spawn-image') {
+    spawnImage(message.imageSrc, message.term);
   }
   return true;
 }
