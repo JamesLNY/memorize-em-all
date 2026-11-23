@@ -8,8 +8,8 @@ const MODE = "pokemon";
  * on the user's config. Time is between max and min, inclusive
  */
 function getDelay() {
-  const max = CONFIG.MAX_TIME_DELAY;
-  const min = CONFIG.MIN_TIME_DELAY;
+  const max = CONFIG.MAX_DELAY;
+  const min = CONFIG.MIN_DELAY;
   let rand = Math.floor(Math.random() * (max - min + 1)) + min;
   return rand * 1000;
 }
