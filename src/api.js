@@ -9,27 +9,27 @@ async function getData(url, options={}) {
     const result = await response.json();
     return result;
   } catch (error) {
+    console.error(url);
+    console.error(options);
     console.error(error.message);
     return {};
   }
 }
 
-// Returns the name of a random pokemon
+// Returns the name of a random pokemon species
 export async function getRandomPokemon() {
-  let allPokemmon = await getData("https://pokeapi.co/api/v2/pokemon/");
-  let count = allPokemmon.count;
+  let allPokemon = await getData("https://pokeapi.co/api/v2/pokedex/national");
+  
+  // pokemon_entries holds an array of pokemon objects
+  let count = allPokemon.pokemon_entries.length;
+  let randomIdx = Math.floor(Math.random() * count);
 
-  // Pokemon are 1-indexed
-  let randomId = Math.floor(Math.random() * count) + 1;
-
-  let randomPokemon = await getData(`https://pokeapi.co/api/v2/pokemon/${randomId}/`);
-
-  return randomPokemon.name;
+  return allPokemon.pokemon_entries[randomIdx].pokemon_species.name;
 }
 
 /**
- * Returns the url corresponding the artwork of the pokemon of name name
- * (image url must be returned rather than the pure image because of how
+ * Returns the url corresponding the artwork of the pokemon-species of name
+ * name (image url must be returned rather than the pure image because of how
  * img tags in html function)
  * 
  * @param {*} type The category of artwork desired. official-artwork is larger
@@ -37,7 +37,13 @@ export async function getRandomPokemon() {
  * pixelated (intended for displaying on the collection screen).
  */
 export async function getPokemonImage(name, type="official-artwork") {
-  let pokemon = await getData(`https://pokeapi.co/api/v2/pokemon/${name}/`);
+  const species = await getData(`https://pokeapi.co/api/v2/pokemon-species/${name}/`);
+
+  // The pokemon-species endpoint doesn't contain
+  // images, so we must call the pokemon endpoint
+  // A single pokemon species may have different
+  // forms, with are stored with different ids
+  let pokemon = await getData(`https://pokeapi.co/api/v2/pokemon/${species.id}/`);
 
   let imageUrl;
 
