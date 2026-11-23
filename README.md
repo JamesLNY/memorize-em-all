@@ -10,7 +10,7 @@ I've wasted hundreds of hours memorizing things--tree species, Pokemon names, fl
 
 This extension takes a dataset of images and words corresponding with them (either sourced from an API or from the user). The extension will periodically display one of the images, and when the user clicks on them, they can type the matching word to "collect" the image. The extension will store and display user statistics.
 
-![System diagram](docs/system-diagram.png)
+![System diagram](docs/system-diagram.drawio.svg)
 
 ## Tech Stack
 
