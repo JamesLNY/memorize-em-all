@@ -25,6 +25,11 @@ This extension takes a dataset of images and words corresponding with them (eith
 
 ## Setup
 
+In the `src` directory, run
+```
+$ node .\build-config.mjs
+```
+
 ## Usage
 
 ## Roadmap

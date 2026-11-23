@@ -23,8 +23,9 @@ async function spawnImage(src, term) {
   // Dynamically import because
   // a) content-script.js is not a module
   // b) eventually, users may change duration
-  const configUrl = chrome.runtime.getURL("config.js");
-  const { CONFIG } = await import(configUrl);
+  const url = chrome.runtime.getURL("config.json");
+  const res = await fetch(url);
+  const CONFIG = await res.json();
 
   // CONFIG.DURATION is in seconds; we must convert it to milliseonds
   setTimeout(despawnImage, CONFIG.DURATION * 1000, image);

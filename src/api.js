@@ -1,4 +1,4 @@
-import { CONFIG } from './config.js';
+import CONFIG from './config.json' with { type: 'json' };
 
 async function getData(url, options={}) {
   try {

@@ -1,5 +1,5 @@
 import * as api from './api.js'
-import { CONFIG } from './config.js';
+import CONFIG from './config.json' with { type: 'json' };
 
 const MODE = "pokemon";
 
