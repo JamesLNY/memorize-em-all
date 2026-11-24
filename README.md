@@ -68,14 +68,21 @@ Prerequisite: [Google Chrome](https://www.google.com/chrome/) installed
 Taken from [this guide](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked) provided by Chrome
 
 ## Usage
-
+1. Open a website (e.g. https://www.google.com/) in a new tab
+2. Wait 15-20 seconds (dependent on the times set in `config.json`)
+3. When a Pokémon appears, click on it
+<img src="./docs/example-image-spawn.png" alt="Example of image spawn" width="400"/>
+4. In the form that pops up, write a guess for name of the Pokémon
+<img src="./docs/example-form.png" alt="Example of image spawn" width="400"/>
+5. Press `enter` to submit the guess and see if you're correct
+6. Press `enter` again to close the popup
 
 ## Roadmap
 
-- [ ] Pull images and corresponding terms from an API
-- [ ] Display images at random intervals
-- [ ] Open form when user clicks on an image
-- [ ] Display an indication if response matches
+- [x] Pull images and corresponding terms from an API
+- [x] Display images at random intervals
+- [x] Open form when user clicks on an image
+- [x] Display an indication if response matches
 - [ ] Track and display images user has collected
 - [ ] Store and include user-uploaded image-term pairs
 - [ ] Setting to adjust time between pop ups

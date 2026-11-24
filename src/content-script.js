@@ -27,8 +27,8 @@ async function spawnImage(src, term) {
   const res = await fetch(url);
   const CONFIG = await res.json();
 
-  // CONFIG.DURATION is in seconds; we must convert it to milliseonds
-  setTimeout(despawnImage, CONFIG.DURATION * 1000, image);
+  // CONFIG.IMAGE_DURATION is in seconds; we must convert it to milliseonds
+  setTimeout(despawnImage, CONFIG.IMAGE_DURATION * 1000, image);
 }
 
 function clickImage(term) {
