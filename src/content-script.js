@@ -1,3 +1,13 @@
+async function getConfig(property) {
+  // Dynamically import because
+  // a) content-script.js is not a module
+  // b) eventually, users may change duration
+  const url = chrome.runtime.getURL("config.json");
+  const res = await fetch(url);
+  const CONFIG = await res.json();
+  return CONFIG[property];
+}
+
 async function spawnImage(src, term) {
   const image = document.createElement('img');
   image.src = src;
@@ -15,18 +25,12 @@ async function spawnImage(src, term) {
     let maxTop = window.innerHeight - this.naturalHeight;
     this.style.top = `${Math.floor(Math.random() * maxTop)}px`;
 
-    document.body.appendChild(this);
+    document.body.append(this);
   }
 
-  // Dynamically import because
-  // a) content-script.js is not a module
-  // b) eventually, users may change duration
-  const url = chrome.runtime.getURL("config.json");
-  const res = await fetch(url);
-  const CONFIG = await res.json();
-
-  // CONFIG.IMAGE_DURATION is in seconds; we must convert it to milliseonds
-  const timeoutId = setTimeout(() => image.remove(), CONFIG.IMAGE_DURATION * 1000);
+  // CONFIG.IMAGE_DURATION is in seconds; we must convert it to milliseonds  
+  let duration = await getConfig("IMAGE_DURATION") * 1000;
+  const timeoutId = setTimeout(() => image.remove(), duration);
 
   image.addEventListener("click", function() {
     clearTimeout(timeoutId);
@@ -35,7 +39,7 @@ async function spawnImage(src, term) {
   });
 }
 
-function buildForm(image, term) {
+async function buildForm(image, term) {
   // Clear event listeners and applied styles
   image = image.cloneNode();
   image.style.cssText = null;
@@ -58,31 +62,45 @@ function buildForm(image, term) {
 
   form.append(progress, image, label, input, submit);
   
+  // Gets duration of form in milliseconds and divide
+  // by 100 to find the delay between 1% ticks
+  let delay = await getConfig("FORM_DURATION") * 1000 / 100;
   const intervalId = setInterval(function() {
     progress.value++;
     if (progress.value == 100) {
       clearInterval(intervalId)
       form.remove();
     }
-  }, 50)
+  }, delay)
 
   form.onsubmit = function (e) {
     clearInterval(intervalId);
     form.remove();
     // Prevents the page from refreshing
     e.preventDefault();
-    submitForm(e, input, term);
+    submitForm(input, term);
   }
 
-  document.body.appendChild(form);
+  document.body.append(form);
 }
 
 function submitForm(input, term) {
-  if (input.value === term) {
-    alert("SUCCESS!");
+  const message = document.createElement("p");
+  message.id = "memorize-em-all"
+
+  if (input.value.toUpperCase() === term.toUpperCase()) {
+    message.innerText = "Correct!";
+    message.style.backgroundColor = "#e0ffcd"
   } else {
-    alert("FAIL!");
+    message.innerText = "Wrong!"
+    message.style.backgroundColor = "#ffcab0"
   }
+
+  message.style.width = '100px';
+
+  setTimeout(() => message.remove(), 1000);
+
+  document.body.append(message);
 }
 
 function handleMessages(message, sender, sendResponse) {

@@ -44,8 +44,6 @@ async function getCurrentTab() {
 async function spawnImage() {
   let tab = await getCurrentTab();
 
-  console.log("Sent");
-
   if (tab !== undefined) {
     let term, imageSrc;
     if (MODE === "pokemon") {
