@@ -1,7 +1,8 @@
 import * as api from './api.js'
+import * as storage from './storage.js'
 import CONFIG from './config.json' with { type: 'json' };
 
-const MODE = "pokemon";
+const COLLECTION = "pokemon";
 
 /**
  * Returns a random delay between spawns (in milliseconds) based
@@ -17,14 +18,18 @@ function getDelay() {
 /**
  * Fires when the extension is first installed, the extension is
  * updated to a new verison, or when Chrome is updated to a new
- * version
- * 
- * Used to set the initial state using Storage API and set a timer
- * for the first spawn
+ * version; Useful when debugging and manually reloading extension
  */
-browser.runtime.onInstalled.addListener(() => {
+browser.runtime.onInstalled.addListener(initialize);
+
+// Fires whenever Chrome is opened
+browser.runtime.onStartup.addListener(initialize);
+
+// Sets the initial stats in storage.js and spawns the first image
+async function initialize() {
+  await storage.initialize();
   setTimeout(spawnImage, getDelay());
-});
+}
 
 /**
  * Returns the currently selected tab in the form of a `tabs.Tab`
@@ -46,7 +51,7 @@ async function spawnImage() {
 
   if (tab !== undefined) {
     let term, imageSrc;
-    if (MODE === "pokemon") {
+    if (COLLECTION === "pokemon") {
       term = await api.getRandomPokemon();
       imageSrc = await api.getPokemonImage(term);
     }
