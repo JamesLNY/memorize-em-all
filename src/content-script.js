@@ -1,5 +1,5 @@
 async function spawnImage(src, term) {
-  const image = new Image();
+  const image = document.createElement('img');
   image.src = src;
 
   // Overlays the image on top of existing content
@@ -18,8 +18,6 @@ async function spawnImage(src, term) {
     document.body.appendChild(this);
   }
 
-  image.addEventListener("click", clickImage.bind(image, term));
-
   // Dynamically import because
   // a) content-script.js is not a module
   // b) eventually, users may change duration
@@ -28,30 +26,70 @@ async function spawnImage(src, term) {
   const CONFIG = await res.json();
 
   // CONFIG.IMAGE_DURATION is in seconds; we must convert it to milliseonds
-  setTimeout(despawnImage, CONFIG.IMAGE_DURATION * 1000, image);
+  const timeoutId = setTimeout(() => image.remove(), CONFIG.IMAGE_DURATION * 1000);
+
+  image.addEventListener("click", function() {
+    clearTimeout(timeoutId);
+    image.remove();
+    buildForm(image, term);
+  });
 }
 
-function clickImage(term) {
-  despawnImage(this);
+function buildForm(image, term) {
+  // Clear event listeners and applied styles
+  image = image.cloneNode();
+  image.style.cssText = null;
 
-  let input = prompt("What's is this image?");
+  const form = document.createElement("form");
+  form.id = "memorize-em-all"
+  const progress = document.createElement("progress");
+  progress.max = 100;
+  progress.value = 0;
+  const label = document.createElement("label");
+  label.innerText = "What is this image?";
+  label.htmlFor = "term";
+  const input = document.createElement("input");
+  input.type = "text";
+  input.id = "term";
+  input.name = "term";
+  const submit = document.createElement("input");
+  submit.type = "submit";
+  submit.value = "Submit";
 
-  if (input === term) {
-    alert("Success!");
+  form.append(progress, image, label, input, submit);
+  
+  const intervalId = setInterval(function() {
+    progress.value++;
+    if (progress.value == 100) {
+      clearInterval(intervalId)
+      form.remove();
+    }
+  }, 50)
+
+  form.onsubmit = function (e) {
+    clearInterval(intervalId);
+    form.remove();
+    // Prevents the page from refreshing
+    e.preventDefault();
+    submitForm(e, input, term);
+  }
+
+  document.body.appendChild(form);
+}
+
+function submitForm(input, term) {
+  if (input.value === term) {
+    alert("SUCCESS!");
   } else {
-    alert("Fail!");
-  }  
+    alert("FAIL!");
+  }
 }
 
-function despawnImage(image) {
-  image.remove();
-}
-
-function handleMessages(message) {
+function handleMessages(message, sender, sendResponse) {
   if (message.type === 'spawn-image') {
     spawnImage(message.imageSrc, message.term);
   }
-  return true;
+  sendResponse('OK');
 }
 
 browser.runtime.onMessage.addListener(handleMessages);
