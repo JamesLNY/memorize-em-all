@@ -13,18 +13,27 @@ const prompts = [
     number: false
   },
   {
-    key: "MAX_DELAY",
-    question: "Enter the maximum delay between spawns (in seconds): ",
-    number: true
-  },
-  {
     key: "MIN_DELAY",
     question: "Enter the minimum delay between spawns (in seconds): ",
+    default: 15,
     number: true
   },
   {
-    key: "DURATION",
+    key: "MAX_DELAY",
+    question: "Enter the maximum delay between spawns (in seconds): ",
+    default: 20,
+    number: true
+  },
+  {
+    key: "IMAGE_DURATION",
     question: "Enter the duration images remain on screen (in seconds): ",
+    default: 10,
+    number: true
+  },
+  {
+    key: "FORM_DURATION",
+    question: "Enter the duration forms remain on screen (in seconds): ",
+    default: 5,
     number: true
   }
 ]
@@ -33,6 +42,19 @@ let CONFIG = {};
 
 for (const prompt of prompts) {
   let response = await rl.question(prompt.question);
+
+  if (response === "") {
+    if (Object.hasOwn(prompt, "default")) {
+      response = prompt.default;
+      console.log(`No response given. Defaulting to ${response}`);
+    } else {
+      while (response === "") {
+        console.log("Please enter a non-empty string.");
+        response = await rl.question(prompt.question);
+      }
+    }
+  }
+
   if (prompt.number) {
     response = Number.parseInt(response);
     while (Number.isNaN(response)) {
@@ -41,6 +63,7 @@ for (const prompt of prompts) {
       response = Number.parseInt(response);
     }
   }
+
   CONFIG[prompt.key] = response;
 }
 
