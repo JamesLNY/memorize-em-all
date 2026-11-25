@@ -73,3 +73,32 @@ async function spawnImage() {
   // Sets timer for the next spawn
   setTimeout(spawnImage, getDelay());
 }
+
+/**
+ * Handles updates on whether the user succeeded at recalling
+ * the term corresponding to the image; Sends a message to the
+ * popup to update stats
+ */
+function handleMessages(message, sender, sendResponse) {
+  switch (message.type) {
+    case "success":
+      storage.addSuccess(message.term, COLLECTION);
+      browser.runtime.sendMessage({type: 'refresh-stats'}).catch(error => {
+        // Handles error if popup hasn't been opened yet
+      });
+      sendResponse('OK');
+      break;
+    case "failure":
+      storage.addFailure(message.term, COLLECTION);
+      browser.runtime.sendMessage({type: 'refresh-stats'}).catch(error => {
+        // Handles error if popup hasn't been opened yet
+      });
+      sendResponse('OK');
+      break;
+    case "get-stats":
+      sendResponse(storage.getStats(COLLECTION));
+      break;
+  }
+}
+
+browser.runtime.onMessage.addListener(handleMessages);

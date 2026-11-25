@@ -10,18 +10,18 @@ async function initializeTerm(term, collection) {
 }
 
 export async function addSuccess(term, collection) {
-  initializeTerm(term, collection);
+  await initializeTerm(term, collection);
   stats[collection][term].successes++;
-  await save();
+  save();
 }
 
 export async function addFailure(term, collection) {
-  initializeTerm(term, collection);
+  await initializeTerm(term, collection);
   stats[collection][term].failures++;
-  await save();
+  save();
 }
 
-export async function getStats(collection) {
+export function getStats(collection) {
   return stats[collection] || {};
 }
 

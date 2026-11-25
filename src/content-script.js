@@ -91,9 +91,17 @@ function submitForm(input, term) {
   if (input.value.toUpperCase() === term.toUpperCase()) {
     message.innerText = "Correct!";
     message.style.backgroundColor = "#e0ffcd"
+    browser.runtime.sendMessage({
+      type: 'success',
+      term: term
+    })
   } else {
     message.innerText = "Wrong!"
     message.style.backgroundColor = "#ffcab0"
+    browser.runtime.sendMessage({
+      type: 'failure',
+      term: term
+    })
   }
 
   message.style.width = '100px';
