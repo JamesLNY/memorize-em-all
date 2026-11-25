@@ -79,24 +79,30 @@ async function spawnImage() {
  * the term corresponding to the image; Sends a message to the
  * popup to update stats
  */
-function handleMessages(message, sender, sendResponse) {
+async function handleMessages(message, sender, sendResponse) {
   switch (message.type) {
     case "success":
+      sendResponse('OK');
       storage.addSuccess(message.term, COLLECTION);
-      browser.runtime.sendMessage({type: 'refresh-stats'}).catch(error => {
+      browser.runtime.sendMessage({
+        type: 'refresh-stats',
+        stats: await storage.getStats(COLLECTION)
+      }).catch(error => {
         // Handles error if popup hasn't been opened yet
       });
-      sendResponse('OK');
       break;
     case "failure":
+      sendResponse('OK');
       storage.addFailure(message.term, COLLECTION);
-      browser.runtime.sendMessage({type: 'refresh-stats'}).catch(error => {
+      browser.runtime.sendMessage({
+        type: 'refresh-stats',
+        stats: await storage.getStats(COLLECTION)
+      }).catch(error => {
         // Handles error if popup hasn't been opened yet
       });
-      sendResponse('OK');
       break;
     case "get-stats":
-      sendResponse(storage.getStats(COLLECTION));
+      sendResponse(await storage.getStats(COLLECTION));
       break;
   }
 }

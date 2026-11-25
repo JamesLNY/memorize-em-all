@@ -1,0 +1,8 @@
+#navigation {
+  display: flex;
+  justify-content: space-between;
+}
+
+#collection {
+  margin-bottom: 10px;
+}

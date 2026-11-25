@@ -3,3 +3,4 @@
 
 ## TODO
 - [ ] Configure `getRandomCountry()` to also return the country name, for purposes of image-term matching
+- [ ] Display the number of image-term pairs viewed out of the total number in a collection

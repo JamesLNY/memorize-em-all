@@ -1,3 +1,5 @@
+import * as api from './api.js'
+
 let stats;
 
 // Initializes a term in stats if it doesn't exist yet
@@ -21,8 +23,14 @@ export async function addFailure(term, collection) {
   save();
 }
 
-export function getStats(collection) {
-  return stats[collection] || {};
+export async function getStats(collection) {
+  let output = stats[collection] || {};
+  for (let [term, values] of Object.entries(output)) {
+    if (collection === "pokemon") {
+      values.src = await api.getPokemonImage(term);
+    }
+  }
+  return output;
 }
 
 // Saves stats to local browser storage; Shouldn't cause
