@@ -2,8 +2,6 @@ import * as api from './api.js'
 import * as storage from './storage.js'
 import CONFIG from './config.json' with { type: 'json' };
 
-const COLLECTION = "COUNTRY_FLAGS";
-
 /**
  * Returns a random delay between spawns (in milliseconds) based
  * on the user's config. Time is between max and min, inclusive
@@ -17,7 +15,7 @@ function getDelay() {
 
 /**
  * Fires when the extension is first installed, the extension is
- * updated to a new verison, or when Chrome is updated to a new
+ * updated to a new version, or when Chrome is updated to a new
  * version; Useful when debugging and manually reloading extension
  */
 browser.runtime.onInstalled.addListener(initialize);
@@ -50,8 +48,9 @@ async function spawnImage() {
   let tab = await getCurrentTab();
 
   if (tab !== undefined) {
-    let term = await api.getRandomTerm(COLLECTION);
-    let imageSrc = await api.getImage(COLLECTION, term);
+    let collection = storage.getActiveCollection();
+    let term = await api.getRandomTerm(collection);
+    let imageSrc = await api.getImage(collection, term);
 
     try {
       // tabs.sendMessage is used to send messages to content scripts
@@ -80,26 +79,30 @@ async function handleMessages(message, sender, sendResponse) {
   switch (message.type) {
     case "success":
       sendResponse('OK');
-      storage.addSuccess(message.term, COLLECTION);
+      storage.addSuccess(message.term);
       browser.runtime.sendMessage({
         type: 'refresh-stats',
-        stats: await storage.getStats(COLLECTION)
+        stats: await storage.getStats()
       }).catch(error => {
         // Handles error if popup hasn't been opened yet
       });
       break;
     case "failure":
       sendResponse('OK');
-      storage.addFailure(message.term, COLLECTION);
+      storage.addFailure(message.term);
       browser.runtime.sendMessage({
         type: 'refresh-stats',
-        stats: await storage.getStats(COLLECTION)
+        stats: await storage.getStats()
       }).catch(error => {
         // Handles error if popup hasn't been opened yet
       });
       break;
+    case "switch-collection":
+      storage.setActiveCollection(message.collection);
+      sendResponse('OK');
+      break;
     case "get-stats":
-      sendResponse(await storage.getStats(COLLECTION));
+      sendResponse(await storage.getStats());
       break;
   }
 }

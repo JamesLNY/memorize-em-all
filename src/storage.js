@@ -1,9 +1,10 @@
 import * as api from './api.js'
+import CONFIG from './config.json' with { type: 'json' };
 
 let stats;
 
 // Initializes a term in stats if it doesn't exist yet
-async function initializeTerm(term, collection) {
+async function initializeTerm(term, collection=stats["activeCollection"]) {
   stats[collection] ??= {};
   stats[collection][term] ??= {
     "successes": 0,
@@ -11,19 +12,19 @@ async function initializeTerm(term, collection) {
   };
 }
 
-export async function addSuccess(term, collection) {
+export async function addSuccess(term, collection=stats["activeCollection"]) {
   await initializeTerm(term, collection);
   stats[collection][term].successes++;
   save();
 }
 
-export async function addFailure(term, collection) {
+export async function addFailure(term, collection=stats["activeCollection"]) {
   await initializeTerm(term, collection);
   stats[collection][term].failures++;
   save();
 }
 
-export async function getStats(collection) {
+export async function getStats(collection=stats["activeCollection"]) {
   let output = stats[collection] || {};
   for (let [term, values] of Object.entries(output)) {
     values.src = await api.getImage(collection, term);
@@ -39,9 +40,22 @@ async function save() {
 }
 
 export async function initialize() {
-  stats = await browser.storage.local.get("memorize-em-all");
-  if (stats === undefined) {
-    stats = {};
+  stats = await browser.storage.local.get("memorize-em-all")
+  stats = stats["memorize-em-all"];
+  if (true || stats === undefined) {
+    stats = {
+      "activeCollection": CONFIG.DEFAULT_COLLECTION
+    };
     await save();
   }
+}
+
+export async function setActiveCollection(collection) {
+  stats["activeCollection"] = collection;
+  await save();
+}
+
+// Returns the collection the user currently has selected
+export function getActiveCollection() {
+  return stats["activeCollection"];
 }

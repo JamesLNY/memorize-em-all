@@ -35,12 +35,31 @@ const prompts = [
     question: "Enter the duration forms remain on screen (in seconds): ",
     default: 5,
     number: true
+  },
+  {
+    key: "DEFAULT_COLLECTION",
+    question: "Enter your preferred default collection: ",
+    default: "POKEMON",
+    number: false
   }
 ]
 
-let CONFIG = {};
+// Initialize with true constants
+let CONFIG = {
+  "COLLECTIONS": [ // The collections that are currently supported
+    "POKEMON",
+    "COUNTRY_FLAGS"
+  ]
+};
 
 for (const prompt of prompts) {
+  if (prompt.key === "DEFAULT_COLLECTION") {
+    console.log("Available Collections: ")
+    for (let collection of CONFIG.COLLECTIONS) {
+      console.log(collection);
+    }
+  }
+
   let response = await rl.question(prompt.question);
 
   if (response === "") {
@@ -57,10 +76,19 @@ for (const prompt of prompts) {
 
   if (prompt.number) {
     response = Number.parseInt(response);
-    while (Number.isNaN(response)) {
-      console.log("Please enter a whole number.");
+    while (Number.isNaN(response) || response <= 0) {
+      console.log("Please enter a positive whole number.");
       response = await rl.question(prompt.question);
       response = Number.parseInt(response);
+    }
+  }
+
+  if (prompt.key === "DEFAULT_COLLECTION") {
+    response = response.toUpperCase();
+    while (!CONFIG.COLLECTIONS.includes(response)) {
+      console.log("Please enter one of the configurations listed above.")
+      response = await rl.question(prompt.question);
+      response = response.toUpperCase();
     }
   }
 

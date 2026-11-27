@@ -49,11 +49,16 @@ and follow the prompts
 Create `config.json` in the `src` directory with
 ```
 {
+  "COLLECTIONS": [
+    "POKEMON",
+    "COUNTRY_FLAGS"
+  ],
   "REST_COUNTRIES_API_KEY": <your_api_key>,
   "MIN_DELAY": 15,
   "MAX_DELAY": 20,
   "IMAGE_DURATION": 10,
-  "FORM_DURATION": 5
+  "FORM_DURATION": 5,
+  "DEFAULT_COLLECTION": "POKEMON",
 }
 ```
 
