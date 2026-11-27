@@ -67,7 +67,7 @@ async function displayStats(allStats) {
       const successes = document.createElement("p");
       successes.textContent = `Successes: ${stats.successes}`;
       const failures = document.createElement("p");
-      failures.textContent = `Failures: ${stats.successes}`;
+      failures.textContent = `Failures: ${stats.failures}`;
       card.append(header, img, successes, failures);
       collectionEle.append(card);
       card.dataset.term = term;
