@@ -29,12 +29,8 @@ async function getRandomPokemon() {
  * Returns the url corresponding the artwork of the pokemon-species of name
  * name (image url must be returned rather than the pure image because of how
  * img tags in html function)
- * 
- * @param {*} type The category of artwork desired. official-artwork is larger
- * (intended for displaying on the user's screen) while sprite is smaller and
- * pixelated (intended for displaying on the collection screen).
  */
-async function getPokemonImage(name, type="official-artwork") {
+async function getPokemonImage(name) {
   const species = await getData(`https://pokeapi.co/api/v2/pokemon-species/${name}/`);
 
   // The pokemon-species endpoint doesn't contain
@@ -43,17 +39,7 @@ async function getPokemonImage(name, type="official-artwork") {
   // forms, with are stored with different ids
   let pokemon = await getData(`https://pokeapi.co/api/v2/pokemon/${species.id}/`);
 
-  let imageUrl;
-
-  if (type == "official-artwork") {
-    imageUrl = pokemon.sprites.other["official-artwork"].front_default;
-  } else if (type == "sprite") {
-    imageUrl = pokemon.sprites.front_default;
-  } else {
-    throw new Error("Invalid Argument");
-  }
-
-  return imageUrl;
+  return pokemon.sprites.other["official-artwork"].front_default;
 }
 
 // Returns the common name of a random country
