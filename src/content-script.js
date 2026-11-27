@@ -8,6 +8,14 @@ async function getConfig(property) {
   return CONFIG[property];
 }
 
+// Teleports the image to a random location
+function teleportImage(img) {
+  let maxLeft = window.innerWidth - img.width;
+  img.style.left = `${Math.floor(Math.random() * maxLeft)}px`;
+  let maxTop = window.innerHeight - img.height;
+  img.style.top = `${Math.floor(Math.random() * maxTop)}px`;
+}
+
 async function spawnImage(src, term) {
   const image = document.createElement('img');
   image.src = src;
@@ -19,21 +27,22 @@ async function spawnImage(src, term) {
 
   image.onload = function() {
     // Wait for the image to load so we can find its dimensions
-
-    let maxLeft = window.innerWidth - this.naturalWidth;
-    this.style.left = `${Math.floor(Math.random() * maxLeft)}px`;
-    let maxTop = window.innerHeight - this.naturalHeight;
-    this.style.top = `${Math.floor(Math.random() * maxTop)}px`;
-
+    image.width = 300;
+    teleportImage(this);
     document.body.append(this);
   }
 
-  // CONFIG.IMAGE_DURATION is in seconds; we must convert it to milliseonds  
+  // CONFIG.IMAGE_DURATION is in seconds; we must convert it to milliseconds  
   let duration = await getConfig("IMAGE_DURATION") * 1000;
   const timeoutId = setTimeout(() => image.remove(), duration);
 
+  // Teleports the image to a random location
+  let numTeleports = await getConfig("NUM_TELEPORTS");
+  const intervalId = setInterval(teleportImage, duration / numTeleports, image);
+
   image.addEventListener("click", function() {
     clearTimeout(timeoutId);
+    clearInterval(intervalId);
     image.remove();
     buildForm(image, term);
   });

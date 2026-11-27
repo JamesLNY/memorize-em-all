@@ -22,7 +22,13 @@ const prompts = [
   {
     key: "IMAGE_DURATION",
     question: "Enter the duration images remain on screen (in seconds): ",
-    default: 10,
+    default: 5,
+    number: true
+  },
+  {
+    key: "NUM_TELEPORTS",
+    question: "Enter the number of times you wish the image to teleport: ",
+    default: 5,
     number: true
   },
   {

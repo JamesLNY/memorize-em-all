@@ -38,6 +38,7 @@ function switchCollection(event) {
     type: 'switch-collection',
     collection: event.target.value
   })
+  curr = undefined;
   displayStats();
 }
 document.getElementById("collection-select").addEventListener("change", switchCollection)

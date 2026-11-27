@@ -19,7 +19,7 @@ This extension takes a dataset of images and words corresponding with them (eith
 
   Chrome Extensions API (https://developer.chrome.com/docs/extensions/reference/api)
   
-  REST Countries API (https://restcountries.com)
+  countries.dev API (https://countries.dev/)
   
   PokéAPI (https://pokeapi.co/)
 
@@ -53,12 +53,12 @@ Create `config.json` in the `src` directory with
     "POKEMON",
     "COUNTRY_FLAGS"
   ],
-  "REST_COUNTRIES_API_KEY": <your_api_key>,
   "MIN_DELAY": 15,
   "MAX_DELAY": 20,
-  "IMAGE_DURATION": 10,
+  "IMAGE_DURATION": 5,
+  "NUM_TELEPORTS": 5,
   "FORM_DURATION": 5,
-  "DEFAULT_COLLECTION": "POKEMON",
+  "DEFAULT_COLLECTION": "POKEMON"
 }
 ```
 
@@ -85,6 +85,11 @@ Taken from [this guide](https://developer.chrome.com/docs/extensions/get-started
 
 5. Press `enter` to submit the guess and see if you're correct
 6. Press `enter` again to close the popup
+7. Click the extension icon to view statistics on your collections
+
+<img src="./docs/example-collection.png" alt="Example of a collection" width="200">
+
+8. Select a different collection in the dropdown to change the images which appear
 
 ## Roadmap
 
@@ -92,7 +97,7 @@ Taken from [this guide](https://developer.chrome.com/docs/extensions/get-started
 - [x] Display images at random intervals
 - [x] Open form when user clicks on an image
 - [x] Display an indication if response matches
-- [ ] Track and display images user has collected
+- [x] Track and display images user has collected
 - [ ] Store and include user-uploaded image-term pairs
 - [ ] Setting to adjust time between pop ups
 - [ ] Streaks, point system to buy power ups (e.g. streak freezes)
