@@ -34,8 +34,6 @@ $ git clone git@github.com:JamesLNY/memorize-em-all.git
 $ cd memorize-em-all
 ```
 ### Step 2: Creating `config.json`
-Create a [Rest Countries API key](https://restcountries.com/)
-
 #### Option 1
 Prerequisite: [node.js](https://nodejs.org/en) installed
 
@@ -83,13 +81,12 @@ Taken from [this guide](https://developer.chrome.com/docs/extensions/get-started
 
 <img src="./docs/example-form.png" alt="Example of image spawn" width="400"/>
 
-5. Press `enter` to submit the guess and see if you're correct
-6. Press `enter` again to close the popup
-7. Click the extension icon to view statistics on your collections
+5. Press `Submit` to see if you're correct
+6. Click the extension icon to view statistics on your collections
 
 <img src="./docs/example-collection.png" alt="Example of a collection" width="200">
 
-8. Select a different collection in the dropdown to change the images which appear
+7. Select a different collection in the dropdown to change the images which appear
 
 ## Roadmap
 
