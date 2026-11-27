@@ -2,7 +2,7 @@ import * as api from './api.js'
 import * as storage from './storage.js'
 import CONFIG from './config.json' with { type: 'json' };
 
-const COLLECTION = "pokemon";
+const COLLECTION = "COUNTRY_FLAGS";
 
 /**
  * Returns a random delay between spawns (in milliseconds) based
@@ -50,11 +50,8 @@ async function spawnImage() {
   let tab = await getCurrentTab();
 
   if (tab !== undefined) {
-    let term, imageSrc;
-    if (COLLECTION === "pokemon") {
-      term = await api.getRandomPokemon();
-      imageSrc = await api.getPokemonImage(term);
-    }
+    let term = await api.getRandomTerm(COLLECTION);
+    let imageSrc = await api.getImage(COLLECTION, term);
 
     try {
       // tabs.sendMessage is used to send messages to content scripts

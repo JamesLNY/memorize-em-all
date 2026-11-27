@@ -17,7 +17,7 @@ async function getData(url, options={}) {
 }
 
 // Returns the name of a random pokemon species
-export async function getRandomPokemon() {
+async function getRandomPokemon() {
   let allPokemon = await getData("https://pokeapi.co/api/v2/pokedex/national");
   
   // pokemon_entries holds an array of pokemon objects
@@ -36,7 +36,7 @@ export async function getRandomPokemon() {
  * (intended for displaying on the user's screen) while sprite is smaller and
  * pixelated (intended for displaying on the collection screen).
  */
-export async function getPokemonImage(name, type="official-artwork") {
+async function getPokemonImage(name, type="official-artwork") {
   const species = await getData(`https://pokeapi.co/api/v2/pokemon-species/${name}/`);
 
   // The pokemon-species endpoint doesn't contain
@@ -58,8 +58,8 @@ export async function getPokemonImage(name, type="official-artwork") {
   return imageUrl;
 }
 
-// Returns the ISO alpha-3 code of a random country
-export async function getRandomCountry() {
+// Returns the common name of a random country
+async function getRandomCountry() {
   // Having a limit is required by the API
   let allCountries = await getData(
     'https://api.restcountries.com/countries/v5?limit=1',
@@ -76,14 +76,34 @@ export async function getRandomCountry() {
     { headers: { 'Authorization': `Bearer ${CONFIG.REST_COUNTRIES_API_KEY}` } }
   );
 
-  return randomCountry.data.objects[0].codes.alpha_3;
+  return randomCountry.data.objects[0].names.common;
 }
 
 // Returns the url corresponding to the country's flag
-export async function getCountryFlag(iso) {
+async function getCountryFlag(name) {
   let country = await getData(
-    `https://api.restcountries.com/countries/v5/codes.alpha_3/${iso}`,
+    `https://api.restcountries.com/countries/v5?names.common=${name}`,
     { headers: { 'Authorization': `Bearer ${CONFIG.REST_COUNTRIES_API_KEY}` } }
   );
   return country.data.objects[0].flag.url_png;
+}
+
+// Returns a random term in a specified collection
+export async function getRandomTerm(collection) {
+  switch (collection) {
+    case "POKEMON":
+      return await getRandomPokemon();
+    case "COUNTRY_FLAGS":
+      return await getRandomCountry();
+  }
+}
+
+// Returns the url of the image associated with a term in a specified collection
+export async function getImage(collection, term) {
+  switch (collection) {
+    case "POKEMON":
+      return await getPokemonImage(term);
+    case "COUNTRY_FLAGS":
+      return await getCountryFlag(term);
+  }
 }

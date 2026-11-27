@@ -26,15 +26,13 @@ export async function addFailure(term, collection) {
 export async function getStats(collection) {
   let output = stats[collection] || {};
   for (let [term, values] of Object.entries(output)) {
-    if (collection === "pokemon") {
-      values.src = await api.getPokemonImage(term);
-    }
+    values.src = await api.getImage(collection, term);
   }
   return output;
 }
 
 // Saves stats to local browser storage; Shouldn't cause
-// any race condiitons because extension reads only once
+// any race conditions because extension reads only once
 // before save is called
 async function save() {
   await browser.storage.local.set({ "memorize-em-all": stats });
