@@ -77,6 +77,7 @@ async function spawnImage() {
  */
 async function handleMessages(message, sender, sendResponse) {
   switch (message.type) {
+    // User successfully matched an image
     case "success":
       sendResponse('OK');
       storage.addSuccess(message.term);
@@ -87,6 +88,7 @@ async function handleMessages(message, sender, sendResponse) {
         // Handles error if popup hasn't been opened yet
       });
       break;
+    // User failed at matching an image
     case "failure":
       sendResponse('OK');
       storage.addFailure(message.term);
@@ -97,12 +99,21 @@ async function handleMessages(message, sender, sendResponse) {
         // Handles error if popup hasn't been opened yet
       });
       break;
+    // Change the active collection
     case "switch-collection":
       storage.setActiveCollection(message.collection);
       sendResponse('OK');
       break;
+    // Get the stats for the current collection
     case "get-stats":
       sendResponse(await storage.getStats());
+      break;
+    // Get a list of all available collections and the currently active one
+    case "get-collections":
+      sendResponse({
+        "collections": CONFIG.COLLECTIONS,
+        "active": storage.getActiveCollection(),
+      });
       break;
   }
 }

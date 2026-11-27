@@ -8,11 +8,6 @@ const rl = createInterface({
 
 const prompts = [
   {
-    key: "REST_COUNTRIES_API_KEY",
-    question: "Enter your Countries API key: ",
-    number: false
-  },
-  {
     key: "MIN_DELAY",
     question: "Enter the minimum delay between spawns (in seconds): ",
     default: 15,

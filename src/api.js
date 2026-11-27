@@ -1,5 +1,3 @@
-import CONFIG from './config.json' with { type: 'json' };
-
 async function getData(url, options={}) {
   try {
     const response = await fetch(url, options);
@@ -60,32 +58,18 @@ async function getPokemonImage(name, type="official-artwork") {
 
 // Returns the common name of a random country
 async function getRandomCountry() {
-  // Having a limit is required by the API
-  let allCountries = await getData(
-    'https://api.restcountries.com/countries/v5?limit=1',
-    { headers: { 'Authorization': `Bearer ${CONFIG.REST_COUNTRIES_API_KEY}` } }
-  );
-
-  let count = allCountries.data.meta.total;
-  let randomId = Math.floor(Math.random() * count);
-
-  // Sort of hacky workaround for getting the country
-  // at an index; Couldn't find a better endpoint
   let randomCountry = await getData(
-    `https://api.restcountries.com/countries/v5?limit=1&offset=${randomId}`,
-    { headers: { 'Authorization': `Bearer ${CONFIG.REST_COUNTRIES_API_KEY}` } }
+    'https://countries.dev/random',
   );
-
-  return randomCountry.data.objects[0].names.common;
+  return randomCountry.name;
 }
 
 // Returns the url corresponding to the country's flag
 async function getCountryFlag(name) {
   let country = await getData(
-    `https://api.restcountries.com/countries/v5?names.common=${name}`,
-    { headers: { 'Authorization': `Bearer ${CONFIG.REST_COUNTRIES_API_KEY}` } }
+    `https://countries.dev/name/${name}`,
   );
-  return country.data.objects[0].flag.url_png;
+  return country[0].flags.png;
 }
 
 // Returns a random term in a specified collection

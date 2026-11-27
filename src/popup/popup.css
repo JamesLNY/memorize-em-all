@@ -3,6 +3,10 @@
   justify-content: space-between;
 }
 
+#collection-select {
+  margin-top: 10px;
+}
+
 #collection {
-  margin-bottom: 10px;
+  margin: 10px 0;
 }

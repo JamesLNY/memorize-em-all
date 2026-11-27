@@ -1,4 +1,6 @@
 const collectionEle = document.getElementById("collection");
+const backBtn = document.getElementById("back-btn");
+const fwdBtn = document.getElementById("fwd-btn")
 
 // The card which is currently being shown
 let curr;
@@ -15,7 +17,7 @@ function viewPrevious() {
   prev.style.display = "block";
   curr = prev;
 }
-document.getElementById("back-btn").addEventListener("click", viewPrevious);
+backBtn.addEventListener("click", viewPrevious);
 
 function viewNext() {
   if (curr === undefined) {
@@ -29,15 +31,21 @@ function viewNext() {
   next.style.display = "block";
   curr = next;
 }
-document.getElementById("fwd-btn").addEventListener("click", viewNext);
+fwdBtn.addEventListener("click", viewNext);
+
+function switchCollection(event) {
+  browser.runtime.sendMessage({
+    type: 'switch-collection',
+    collection: event.target.value
+  })
+  displayStats();
+}
+document.getElementById("collection-select").addEventListener("change", switchCollection)
 
 // Needs to be asynchronous so that displayStats isn't
 // called twice while waiting for get-stats
 async function displayStats(allStats) {
-  if (allStats instanceof Event) {
-    // Handles the case when the popup is just loaded
-    // because addEventListener passes in the event
-    // Kinda of a hacky way to do it though
+  if (allStats === undefined) {
     allStats = await browser.runtime.sendMessage({
       type: 'get-stats'
     })
@@ -45,8 +53,12 @@ async function displayStats(allStats) {
 
   if (Object.keys(allStats).length == 0) {
     collectionEle.innerText = "You haven't found any images yet!";
+    backBtn.style.display = "none";
+    fwdBtn.style.display = "none";
   } else {
     collectionEle.innerText = "";
+    backBtn.style.display = "inline-block";
+    fwdBtn.style.display = "inline-block";
     let currTerm;
     for (let [term, stats] of Object.entries(allStats)) {
       // First card is displayed if the popup hasn't been opened yet;
@@ -89,9 +101,24 @@ function handleMessages(message, sender, sendResponse) {
   sendResponse('OK');
 }
 
+async function initialize() {
+  const collectionSelect = document.getElementById("collection-select");
+  const {active, collections} = await browser.runtime.sendMessage({
+    type: 'get-collections',
+  });
+  for (let collection of collections) {
+    let option = document.createElement("option");
+    option.value = collection;
+    option.innerText = collection.replaceAll("_", " ").toLowerCase();
+    collectionSelect.append(option);
+  }
+  collectionSelect.value = active;
+  displayStats();
+}
+
 /**
  * Popup should load most recent stats when it is first loaded,
  * and receive updates while it is open
  */
-document.addEventListener('DOMContentLoaded', displayStats);
+document.addEventListener('DOMContentLoaded', initialize);
 browser.runtime.onMessage.addListener(handleMessages);
