@@ -7,6 +7,10 @@
   margin-top: 10px;
 }
 
+body, html {
+  height: fit-content;
+}
+
 #collection {
   margin: 10px 0;
 }
